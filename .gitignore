@@ -1,0 +1,27 @@
+# Entornos virtuales
+env/
+venv/
+ENV/
+.env/
+
+# Archivos de base de datos
+instance/*.db
+instance/*.db-journal
+
+# Archivos de configuración
+*.pyc
+__pycache__/
+
+# Ignorar todos los __pycache__ en todas las carpetas
+**/__pycache__/
+
+# Archivos de registro
+*.log
+
+# Directorios de IDEs
+.vscode/
+.idea/
+
+# Archivos específicos de sistema operativo
+.DS_Store
+Thumbs.db
