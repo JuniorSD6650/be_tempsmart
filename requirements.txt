@@ -1,7 +1,0 @@
-Flask
-Flask-CORS
-SQLAlchemy
-Flask-SQLAlchemy
-Flask-Migrate
-flask_script
-flask-jwt-extended
