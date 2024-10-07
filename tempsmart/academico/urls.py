@@ -15,4 +15,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('auth/register/', views.UserRegisterView.as_view(), name='register'),
     path('auth/login/', views.UserLoginView.as_view(), name='login'),
+    path('upload-pdf/', views.UploadPDFView.as_view(), name='upload-pdf'),
 ]
