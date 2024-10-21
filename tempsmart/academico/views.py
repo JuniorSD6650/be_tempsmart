@@ -12,6 +12,7 @@ from .serializers import (
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.parsers import MultiPartParser, FormParser
 import pdfplumber
 from django.db import transaction
@@ -51,7 +52,28 @@ class UserLoginView(APIView):
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        
+        # Extrae los datos devueltos por el serializador
+        user_data = serializer.validated_data
+        username = user_data['username']
+        
+        # Recuperar el usuario basado en el nombre de usuario
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Generar o recuperar el token
+        token, created = Token.objects.get_or_create(user=user)
+
+        return Response({
+            'token': token.key,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+            }
+        }, status=status.HTTP_200_OK)
 
 # Nueva vista para procesar el PDF
 class UploadPDFView(APIView):
