@@ -127,22 +127,21 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.WARNING(f"Curso {curso.nombre} ya existía"))
 
         # Crear íconos
-        icon_path = 'static/icons/'
-
         iconos = [
-            {'nombre': 'Book', 'imagen': 'book.svg'},
+            {'nombre': 'Clase Icon', 'imagen': 'ClassIcon'},
+            {'nombre': 'Laptop Icon', 'imagen': 'LaptopChromebookIcon'},
+            {'nombre': 'Bolígrafo Icon', 'imagen': 'EditIcon'},
         ]
 
         for icono_data in iconos:
-            icono, created = Icono.objects.get_or_create(nombre=icono_data['nombre'])
-            if not icono.imagen:
-                image_path = os.path.join(icon_path, icono_data['imagen'])
-                with open(image_path, 'rb') as image_file:
-                    icono.imagen.save(icono_data['imagen'], File(image_file), save=True)
-
+            icono, created = Icono.objects.get_or_create(
+                nombre=icono_data['nombre'],
+                defaults={'imagen': icono_data['imagen']}
+            )
+            
             if created:
-                self.stdout.write(self.style.SUCCESS(f"Icono {icono.nombre} creado"))
+                self.stdout.write(self.style.SUCCESS(f"Icono {icono.nombre} creado con referencia {icono.imagen}"))
             else:
-                self.stdout.write(self.style.WARNING(f"Icono {icono.nombre} ya existía"))
+                self.stdout.write(self.style.WARNING(f"Icono {icono.nombre} ya existía con referencia {icono.imagen}"))
 
         self.stdout.write(self.style.SUCCESS("Seed completado exitosamente."))

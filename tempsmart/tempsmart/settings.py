@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'academico',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
