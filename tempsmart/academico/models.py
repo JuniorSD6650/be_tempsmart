@@ -25,7 +25,7 @@ class PerfilUsuario(models.Model):
 # Icono para los cursos y tareas
 class Icono(models.Model):
     nombre = models.CharField(max_length=100)
-    imagen = models.ImageField(upload_to='icons/')
+    imagen = models.CharField(max_length=100, help_text="Nombre del icono de MUI-ICONS (ej. ClassIcon, EditIcon)")
 
     def __str__(self):
         return self.nombre
@@ -56,7 +56,7 @@ class Curso(models.Model):
 class CursoUsuario(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cursos_personales")
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name="cursos_asignados")
-    creado_por_usuario = models.BooleanField(default=False)  # Para diferenciar si es un curso creado o seleccionado del programa
+    creado_por_usuario = models.BooleanField(default=False) 
 
     def __str__(self):
         return f"{self.usuario.username} - {self.curso.nombre}"

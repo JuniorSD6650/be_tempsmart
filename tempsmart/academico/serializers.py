@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Curso, Horario, Tarea, TipoHorario, Notificacion, CursoUsuario, ProgramaAcademico, Publicacion, Comentario, PerfilUsuario
+from .models import Curso, Horario, Tarea, TipoHorario, Notificacion, CursoUsuario, ProgramaAcademico, Publicacion, Comentario, PerfilUsuario, Icono
 from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.contrib.auth import authenticate
@@ -13,9 +13,12 @@ class CursoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CursoUsuarioSerializer(serializers.ModelSerializer):
+    usuario = serializers.ReadOnlyField(source='usuario.id')
+    curso = CursoSerializer(read_only=True)
+
     class Meta:
         model = CursoUsuario
-        fields = '__all__'
+        fields = ['id', 'usuario', 'curso', 'creado_por_usuario']
 
 class HorarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,6 +59,11 @@ class PerfilUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = PerfilUsuario
         fields = '__all__'
+
+class IconoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Icono
+        fields = ['id', 'nombre', 'imagen']
 
 # Serializer para registro de usuario, con campos extra para perfil
 class UserRegisterSerializer(serializers.ModelSerializer):
