@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-cm6=2$l&n=()9z)_itnu(56!bwnpref#5$5#-ep6+5$%tu$j@l
 DEBUG = True
 
 # Agrega localhost y 127.0.0.1 a ALLOWED_HOSTS para permitir solicitudes locales
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'mi-backend.loca.lt', 'mi-frontend.loca.lt/']
 
 # Application definition
 
@@ -117,6 +117,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000', 
+    'https://mi-frontend.loca.lt',
+    "https://mi-backend.loca.lt",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

@@ -26,9 +26,13 @@ class HorarioSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class TareaSerializer(serializers.ModelSerializer):
+    curso_nombre = serializers.CharField(source='curso.curso.nombre', read_only=True)
+    icono_nombre = serializers.CharField(source='icono.nombre', read_only=True)
+    icono_imagen = serializers.CharField(source='icono.imagen', read_only=True)
+
     class Meta:
         model = Tarea
-        fields = '__all__'
+        fields = ['id', 'titulo', 'descripcion', 'fecha_vencimiento', 'curso', 'curso_nombre', 'icono', 'icono_nombre', 'icono_imagen']
 
 class TipoHorarioSerializer(serializers.ModelSerializer):
     class Meta:

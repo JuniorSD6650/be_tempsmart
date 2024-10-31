@@ -71,8 +71,14 @@ class HorarioViewSet(viewsets.ModelViewSet):
     serializer_class = HorarioSerializer
 
 class TareaViewSet(viewsets.ModelViewSet):
-    queryset = Tarea.objects.all()
     serializer_class = TareaSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Filtra las tareas por el usuario autenticado
+        usuario = self.request.user
+        return Tarea.objects.filter(curso__usuario=usuario)
+
 
 class TipoHorarioViewSet(viewsets.ModelViewSet):
     queryset = TipoHorario.objects.all()
