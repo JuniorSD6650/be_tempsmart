@@ -128,9 +128,16 @@ class Command(BaseCommand):
 
         # Crear íconos
         iconos = [
-            {'nombre': 'Clase Icon', 'imagen': 'ClassIcon'},
-            {'nombre': 'Laptop Icon', 'imagen': 'LaptopChromebookIcon'},
-            {'nombre': 'Bolígrafo Icon', 'imagen': 'EditIcon'},
+            {'nombre': 'Clase', 'imagen': 'ClassIcon'},
+            {'nombre': 'Laptop', 'imagen': 'LaptopIcon'},
+            {'nombre': 'Bolígrafo', 'imagen': 'EditIcon'},
+            {'nombre': 'Alarma', 'imagen': 'AccessAlarmIcon'},
+            {'nombre': 'Libro', 'imagen': 'MenuBookIcon'},
+            {'nombre': 'Mensaje', 'imagen': 'MailOutlineIcon'},
+            {'nombre': 'Marcador', 'imagen': 'BookmarkIcon'},
+            {'nombre': 'Favorito', 'imagen': 'StarIcon'},
+            {'nombre': 'Importante', 'imagen': 'CrisisAlertIcon'},
+            {'nombre': 'Reunion', 'imagen': 'GroupsIcon'},
         ]
 
         for icono_data in iconos:

@@ -24,6 +24,7 @@ from django.db import transaction
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.decorators import action
 
 # ViewSets para los iconos
 class IconoViewSet(viewsets.ReadOnlyModelViewSet):
@@ -75,10 +76,20 @@ class TareaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Filtra las tareas por el usuario autenticado
         usuario = self.request.user
         return Tarea.objects.filter(curso__usuario=usuario)
 
+    @action(detail=False, methods=['get'], url_path='curso/(?P<curso_id>[^/.]+)')
+    def tareas_por_curso(self, request, curso_id=None):
+        usuario = request.user
+        try:
+            curso_usuario = CursoUsuario.objects.get(usuario=usuario, curso__id=curso_id)
+        except CursoUsuario.DoesNotExist:
+            return Response({'detail': 'No estás inscrito en este curso.'}, status=404)
+
+        tareas = Tarea.objects.filter(curso=curso_usuario)
+        serializer = self.get_serializer(tareas, many=True)
+        return Response(serializer.data)
 
 class TipoHorarioViewSet(viewsets.ModelViewSet):
     queryset = TipoHorario.objects.all()
