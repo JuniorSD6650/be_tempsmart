@@ -21,9 +21,34 @@ class CursoUsuarioSerializer(serializers.ModelSerializer):
         fields = ['id', 'usuario', 'curso', 'creado_por_usuario']
 
 class HorarioSerializer(serializers.ModelSerializer):
+    # Campos que son de solo lectura (para visualización)
+    curso = serializers.CharField(source='curso.curso.nombre', read_only=True)
+    color = serializers.CharField(source='curso.curso.color', read_only=True)
+    docente = serializers.CharField(source='curso.curso.docente', allow_null=True, read_only=True)
+    dia = serializers.SerializerMethodField(read_only=True)  
+    horaInicio = serializers.TimeField(source='hora_inicio', format="%H:%M", read_only=True)  
+    horaFin = serializers.TimeField(source='hora_fin', format="%H:%M", read_only=True)  
+
+    # Campos de escritura
+    curso_id = serializers.PrimaryKeyRelatedField(queryset=CursoUsuario.objects.all(), source='curso', write_only=True)
+    dia_de_la_semana = serializers.IntegerField(write_only=True) 
+    hora_inicio = serializers.TimeField(write_only=True)  
+    hora_fin = serializers.TimeField(write_only=True) 
+
     class Meta:
         model = Horario
-        fields = '__all__'
+        fields = [
+            'id', 'curso', 'color', 'docente', 'dia', 'horaInicio', 'horaFin', 'aula',
+            'curso_id', 'dia_de_la_semana', 'hora_inicio', 'hora_fin', 'usuario', 'tipo'
+        ]
+
+    def get_dia(self, obj):
+        # Convertir dia_de_la_semana a nombre del día
+        dias_semana = {
+            1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves',
+            5: 'Viernes', 6: 'Sábado', 7: 'Domingo'
+        }
+        return dias_semana.get(obj.dia_de_la_semana, 'Desconocido')
 
 class TareaSerializer(serializers.ModelSerializer):
     curso_nombre = serializers.CharField(source='curso.curso.nombre', read_only=True)

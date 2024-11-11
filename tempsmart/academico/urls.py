@@ -6,7 +6,7 @@ from . import views
 router = DefaultRouter()
 router.register(r'cursos', views.CursoViewSet)
 router.register(r'cursos-usuario', views.CursoUsuarioViewSet, basename='cursousuario')
-router.register(r'horarios', views.HorarioViewSet)
+router.register(r'horarios', views.HorarioViewSet, basename='horarios')
 router.register(r'tareas', views.TareaViewSet, basename='tarea')
 router.register(r'tipos-horario', views.TipoHorarioViewSet)
 router.register(r'notificaciones', views.NotificacionViewSet)

@@ -68,8 +68,12 @@ class CursoUsuarioViewSet(viewsets.ModelViewSet):
         serializer.save(usuario=self.request.user, curso=curso, creado_por_usuario=True)
 
 class HorarioViewSet(viewsets.ModelViewSet):
-    queryset = Horario.objects.all()
     serializer_class = HorarioSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        usuario = self.request.user
+        return Horario.objects.filter(usuario=usuario)
 
 class TareaViewSet(viewsets.ModelViewSet):
     serializer_class = TareaSerializer
@@ -119,10 +123,10 @@ class UserRegisterView(APIView):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            token, created = Token.objects.get_or_create(user=user)  # Crear o recuperar el token del usuario
+            token, created = Token.objects.get_or_create(user=user)  
             return Response({
                 'user': serializer.data,
-                'token': token.key  # Incluye el token en la respuesta
+                'token': token.key  
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
