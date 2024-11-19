@@ -80,9 +80,17 @@ class PublicacionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ComentarioSerializer(serializers.ModelSerializer):
+    usuario_nombre = serializers.CharField(source='usuario.username', read_only=True)  # Nombre del usuario
+    usuario_id = serializers.IntegerField(source='usuario.id', read_only=True)  # ID del usuario
+
     class Meta:
         model = Comentario
-        fields = '__all__'
+        fields = ['id', 'publicacion', 'contenido', 'fecha_creacion', 'usuario_nombre', 'usuario_id']
+
+    def create(self, validated_data):
+        # Asocia el usuario autenticado al comentario
+        validated_data['usuario'] = self.context['request'].user
+        return super().create(validated_data)
 
 class PerfilUsuarioSerializer(serializers.ModelSerializer):
     class Meta:

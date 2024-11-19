@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from academico.models import ProgramaAcademico, PerfilUsuario, Curso, Icono, TipoHorario
+from academico.models import ProgramaAcademico, PerfilUsuario, Curso, Icono, TipoHorario, Publicacion
 from django.core.files import File
 import os
 
@@ -112,6 +112,8 @@ class Command(BaseCommand):
             {'nombre': 'Gobierno de Tecnología de la Información', 'descripcion': 'Curso sobre la gestión y gobierno de TI.', 'color': '#FF8C33'}
         ]
 
+        cursos = {}
+
         for curso_data in cursos_data:
             curso, created = Curso.objects.get_or_create(
                 nombre=curso_data['nombre'],
@@ -121,6 +123,7 @@ class Command(BaseCommand):
                     'programa_academico': programa
                 }
             )
+            cursos[curso_data['nombre']] = curso
             if created:
                 self.stdout.write(self.style.SUCCESS(f"Curso {curso.nombre} creado"))
             else:
@@ -150,5 +153,123 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"Icono {icono.nombre} creado con referencia {icono.imagen}"))
             else:
                 self.stdout.write(self.style.WARNING(f"Icono {icono.nombre} ya existía con referencia {icono.imagen}"))
+
+        # Crear publicaciones con apuntes académicos
+        publicaciones_data = [
+            {
+                'curso': cursos['Lenguaje I'],
+                'titulo': 'Apuntes sobre análisis de textos literarios',
+                'contenido': """
+**Temas tratados:**
+1. Introducción a los géneros literarios (narrativo, lírico, dramático).
+2. Análisis de textos argumentativos.
+3. Uso de conectores y cohesión textual.
+
+**Palabras clave principales:**
+- Géneros literarios
+- Análisis crítico
+- Cohesión y coherencia
+
+**Posibles preguntas de examen:**
+1. ¿Cuáles son las características principales de un texto narrativo?
+2. Enumera y explica los tipos de conectores utilizados en un texto argumentativo.
+3. Realiza un análisis crítico de un texto lírico.
+
+""",
+            },
+            {
+                'curso': cursos['Matemática Básica I'],
+                'titulo': 'Apuntes sobre álgebra básica',
+                'contenido': """
+**Temas tratados:**
+1. Operaciones básicas con números enteros y fracciones.
+2. Resolución de ecuaciones lineales.
+3. Propiedades de los números primos.
+
+**Palabras clave principales:**
+- Ecuaciones lineales
+- Fracciones
+- Números primos
+
+**Posibles preguntas de examen:**
+1. Resuelve la ecuación: 2x + 5 = 15.
+2. ¿Cuáles son las propiedades fundamentales de los números primos?
+3. Simplifica: (3/4) + (5/6).
+""",
+            },
+            {
+                'curso': cursos['Psicología General'],
+                'titulo': 'Apuntes sobre teoría del aprendizaje',
+                'contenido': """
+**Temas tratados:**
+1. Teoría conductista: Pavlov y Skinner.
+2. Teoría cognitiva: Piaget.
+3. Aprendizaje social: Bandura.
+
+**Palabras clave principales:**
+- Conductismo
+- Desarrollo cognitivo
+- Aprendizaje social
+
+**Posibles preguntas de examen:**
+1. ¿Cuál es la diferencia entre refuerzo positivo y negativo en el conductismo?
+2. Explica las etapas del desarrollo cognitivo según Piaget.
+3. ¿Qué se entiende por aprendizaje vicario según Bandura?
+""",
+            },
+            {
+                'curso': cursos['Introducción a la Ingeniería de Sistemas e Informática'],
+                'titulo': 'Apuntes sobre conceptos básicos de sistemas',
+                'contenido': """
+**Temas tratados:**
+1. Definición de sistemas y componentes principales.
+2. Ciclo de vida de un sistema.
+3. Introducción a los sistemas de información.
+
+**Palabras clave principales:**
+- Sistema
+- Ciclo de vida
+- Sistemas de información
+
+**Posibles preguntas de examen:**
+1. Define qué es un sistema y menciona sus componentes básicos.
+2. ¿Qué etapas componen el ciclo de vida de un sistema?
+3. ¿Cuál es la diferencia entre datos e información en un sistema informático?
+""",
+            },
+            {
+                'curso': cursos['Ética y Liderazgo'],
+                'titulo': 'Apuntes sobre principios éticos en el liderazgo',
+                'contenido': """
+**Temas tratados:**
+1. Concepto de ética profesional.
+2. Liderazgo transformacional y situacional.
+3. Toma de decisiones éticas en el trabajo.
+
+**Palabras clave principales:**
+- Ética profesional
+- Liderazgo transformacional
+- Toma de decisiones
+
+**Posibles preguntas de examen:**
+1. Explica qué es la ética profesional y su importancia en el liderazgo.
+2. Diferencia entre liderazgo transformacional y situacional.
+3. Describe un caso práctico de toma de decisiones éticas.
+""",
+            },
+        ]
+
+        for publicacion_data in publicaciones_data:
+            publicacion, created = Publicacion.objects.get_or_create(
+                curso=publicacion_data['curso'],
+                titulo=publicacion_data['titulo'],
+                defaults={
+                    'contenido': publicacion_data['contenido']
+                }
+            )
+            if created:
+                self.stdout.write(self.style.SUCCESS(f"Publicación '{publicacion.titulo}' creada"))
+            else:
+                self.stdout.write(self.style.WARNING(f"Publicación '{publicacion.titulo}' ya existía"))
 
         self.stdout.write(self.style.SUCCESS("Seed completado exitosamente."))

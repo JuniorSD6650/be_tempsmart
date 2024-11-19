@@ -13,7 +13,8 @@ from .serializers import (
     ComentarioSerializer,
     UserRegisterSerializer,
     UserLoginSerializer,
-    IconoSerializer
+    IconoSerializer,
+    PerfilUsuarioSerializer
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -112,9 +113,23 @@ class PublicacionViewSet(viewsets.ModelViewSet):
     serializer_class = PublicacionSerializer
 
 class ComentarioViewSet(viewsets.ModelViewSet):
-    queryset = Comentario.objects.all()
     serializer_class = ComentarioSerializer
+    permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        # Filtrar comentarios por publicación
+        publicacion_id = self.request.query_params.get('publicacion')
+        if publicacion_id:
+            return Comentario.objects.filter(publicacion_id=publicacion_id)
+        return Comentario.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        # Permitir eliminar solo si el usuario es el dueño del comentario
+        comentario = self.get_object()
+        if comentario.usuario != request.user:
+            return Response({'error': 'No tienes permiso para eliminar este comentario.'}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
+    
 # Registro de usuario
 class UserRegisterView(APIView):
     permission_classes = [AllowAny]
@@ -154,3 +169,20 @@ class UserLoginView(APIView):
                 'email': user.email,
             }
         }, status=status.HTTP_200_OK)
+
+class UsuarioActualView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        perfil = None
+
+        if hasattr(user, 'perfil'):
+            perfil = PerfilUsuarioSerializer(user.perfil).data
+
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "perfil": perfil
+        })

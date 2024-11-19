@@ -111,7 +111,6 @@ class Publicacion(models.Model):
     def __str__(self):
         return f"{self.titulo} - {self.curso.nombre}"
 
-# Comentarios en las publicaciones del foro, creados por los estudiantes
 class Comentario(models.Model):
     publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE, related_name="comentarios")
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
